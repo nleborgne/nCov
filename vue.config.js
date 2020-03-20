@@ -1,4 +1,4 @@
 // vue.config.js
 module.exports = {
-publicPath: ‘/my-first-project/’
+publicPath: ‘/covid-19-dashboard/’
 }

@@ -171,8 +171,8 @@ export default {
               arrayDeaths.push(sumDeaths);
             }
 
-            for(var i = 0; i < Object.values(this.graphDataApi[0].timeline.cases).length; i++) {
-              console.log(i);
+            for(var k = 0; k < Object.values(this.graphDataApi[0].timeline.cases).length; k++) {
+              console.log(k);
               // We're not pushing the actual dates for display purpose
               arrayLabels.push('');
             }

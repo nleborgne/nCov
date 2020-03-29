@@ -21,14 +21,7 @@ import locale from 'element-ui/lib/locale'
 
 locale.use(lang)
 
-// import DataTables and DataTablesServer separately
-import {DataTables, DataTablesServer} from 'vue-data-tables'
-Vue.use(DataTables)
-Vue.use(DataTablesServer)
 
-// import DataTables and DataTablesServer together
-import VueDataTables from 'vue-data-tables'
-Vue.use(VueDataTables)
 
 import VueGraph from 'vue-graph'
 

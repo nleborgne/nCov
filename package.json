@@ -10,9 +10,11 @@
     "deploy": "npm run clean && npm run build"
   },
   "engines": {
-    "node":"10.14.2"
+    "node": "10.14.2"
   },
   "dependencies": {
+    "@amcharts/amcharts4": "^4.9.12",
+    "@amcharts/amcharts4-geodata": "^4.1.14",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.7.0",

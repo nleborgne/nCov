@@ -2,7 +2,7 @@
 
 <div id="app" v-cloak>
 
-  <img src="/virus.png" style="width:50px;margin-top:-50px;" class="mx-auto" alt="">
+  <img src="virus.png" style="width:50px;margin-top:-50px;" class="mx-auto" alt="">
 
   <div id="page" class="col-10 mx-auto">
 

@@ -21,12 +21,6 @@ import locale from 'element-ui/lib/locale'
 
 locale.use(lang)
 
-
-
-import VueGraph from 'vue-graph'
-
-Vue.use(VueGraph)
-
 Vue.config.productionTip = false
 
 new Vue({

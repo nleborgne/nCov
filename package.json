@@ -26,6 +26,7 @@
     "vue-chartjs": "^3.5.0",
     "vue-data-tables": "^3.4.5",
     "vue-graph": "^0.8.7",
+    "vue-loading-overlay": "^3.3.2",
     "vuejs-datatable": "^2.0.0-alpha.7"
   },
   "devDependencies": {

@@ -1,24 +1,10 @@
-# covid
+# covid [![DeepScan grade](https://deepscan.io/api/teams/8463/projects/10664/branches/150011/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=8463&pid=10664&bid=150011)
 
-## Project setup
-```
-npm install
-```
+## Description
+Dashboard providing data about Covid-19 outbreak.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## API
+I used this API to retrieve data: [https://github.com/NovelCOVID/API](https://github.com/NovelCOVID/API)
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Link
+https://nleborgne.github.io/covid-19-dashboard/

@@ -187,7 +187,7 @@ export default {
 
       if(this.selectedCountry != 'World') {
       axios
-        .get('https://corona.lmao.ninja/v2/historical/'+this.selectedCountry)
+        .get('https://corona.lmao.ninja/v2/historical/'+this.selectedCountry+'?lastdays=all')
         .then(response => {
           this.graphDataApi = response.data.timeline;
 
@@ -202,7 +202,7 @@ export default {
       } else {
 
         axios
-          .get('https://corona.lmao.ninja/v2/historical/')
+          .get('https://corona.lmao.ninja/v2/historical?lastdays=all')
           .then(response => {
             this.graphDataApi = response.data;
 

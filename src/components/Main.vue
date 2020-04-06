@@ -454,6 +454,7 @@ export default {
       if (this.chart) {
         this.chart.dispose();
       }
+      window.clearInterval();
     }
 }
 

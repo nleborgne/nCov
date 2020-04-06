@@ -447,15 +447,16 @@ export default {
     this.show=true;
     this.getCountries();
     this.getData();
-    window.setInterval(this.getData,5*60000);
+    var interval = this.getData;
+    window.setInterval(interval,5*60000);
   },
 
-    beforeDestroy() {
-      if (this.chart) {
-        this.chart.dispose();
-      }
-      window.clearInterval();
+  beforeDestroy() {
+    if (this.chart) {
+      this.chart.dispose();
     }
+    window.clearInterval(interval);
+  }
 }
 
 </script>

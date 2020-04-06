@@ -139,11 +139,11 @@ export default {
           let minutes = new Date(this.dataWorld.updated).getMinutes();
           let seconds = new Date(this.dataWorld.updated).getSeconds();
 
-          (day < 10) ? (day = '0'+day);
-          (month < 10) ? (month = '0'+month);
-          (hour < 10) ? (hour = '0'+hour);
-          (minutes < 10) ? (minutes = '0'+minutes);
-          (seconds < 10) ? (seconds = '0'+seconds);
+          if (day < 10) day = '0'+day;
+          if (month < 10) month = '0'+month;
+          if (hour < 10) hour = '0'+hour;
+          if (minutes < 10) minutes = '0'+minutes;
+          if (seconds < 10) seconds = '0'+seconds;
           this.updated = day+'/'+month+'/'+new Date(this.dataWorld.updated).getFullYear()+' - '+hour+':'+minutes+':'+seconds;
         })
         axios

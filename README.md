@@ -7,4 +7,4 @@ Dashboard providing data about Covid-19 outbreak.
 I used this API to retrieve data: [https://github.com/NovelCOVID/API](https://github.com/NovelCOVID/API)
 
 ## Link
-https://nleborgne.github.io/covid-19-dashboard/
+https://nleborgne.github.io/ncov/

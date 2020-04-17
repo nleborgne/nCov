@@ -129,7 +129,7 @@ export default {
     getData: function() {
       this.isLoading = true;
       axios
-        .get('https://corona.lmao.ninja/all')
+        .get('https://corona.lmao.ninja/v2/all')
         .then(response => {
           this.dataWorld = response.data;
 
@@ -147,7 +147,7 @@ export default {
           this.updated = day+'/'+month+'/'+new Date(this.dataWorld.updated).getFullYear()+' - '+hour+':'+minutes+':'+seconds;
         })
         axios
-          .get('https://corona.lmao.ninja/countries')
+          .get('https://corona.lmao.ninja/v2/countries')
           .then(response => {
             this.dataCountries = response.data;
 
@@ -363,7 +363,7 @@ export default {
       var arrayCountries = [];
 
       axios
-        .get('https://corona.lmao.ninja/countries')
+        .get('https://corona.lmao.ninja/v2/countries')
         .then(response => {
           this.apiResponse = response.data;
           for(var countryInfos of this.apiResponse) arrayCountries.push(countryInfos['country'])

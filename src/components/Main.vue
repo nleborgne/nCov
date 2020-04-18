@@ -10,11 +10,14 @@
 
   <div id="page" class="col-10 mx-auto">
 
-    <div class="col-xs-10 col-md-3 mx-auto">
+    <a id="switch" @click="darkThemeSwitch"><i class="far fa-moon fa-2x"></i></a>
+
+    <div class="col-xs-10 col-md-6 mx-auto">
 
       <el-select
         v-model="selectedCountry"
         v-on:change="updateData(selectedCountry);"
+        class="col-12"
         filterable
       >
         <el-option value="World">World</el-option>
@@ -26,6 +29,7 @@
           >
         </el-option>
       </el-select>
+
     </div>
 
     <h4 class="mx-auto mt-4">{{selectedCountry}} <img v-if="selectedCountry != 'World'" :src="countryImg" alt="" style="max-width:50px;height:auto;"> </h4>
@@ -63,9 +67,6 @@
 
 </div>
 
-
-<h6 class="top-left d-none d-sm-block">Updated : {{updated}}</h6>
-
       <div class="col-xs-12 col-md-10 mt-4 mx-auto">
           <div class="hello" ref="chartdiv"></div>
       </div>
@@ -75,6 +76,16 @@
       </div>
 
   </div>
+  <footer class="footer">
+    <div class="container">
+      <span id="madeby" class="text-muted">made by <a href="https://builtbynlb.com/" target="_blank">nlb</a></span>
+      <span>&nbsp;|&nbsp;</span>
+      <span>last update : {{updated}}</span>
+      <span>&nbsp;|&nbsp;</span>
+      <span>Stay safe <i class="fas fa-heart"></i></span>
+
+    </div>
+</footer>
 </div>
 </template>
 
@@ -122,7 +133,8 @@ export default {
       countriesList: null,
       selectedCountry:'World',
       countryImg: null,
-      graphNames:['Confirmed','Deaths']
+      graphNames:['Confirmed','Deaths'],
+      theme:'light'
     }
   },
   methods: {
@@ -282,78 +294,16 @@ export default {
 
       chart.responsive.enabled = true;
 
+      if(this.theme === "dark") {
+        valueAxis.renderer.labels.template.fill = am4core.color("#dedede");
+        dateAxis.renderer.labels.template.fill = am4core.color("#dedede");
+        chart.legend.labels.template.fill = am4core.color("#dedede");
+      } else if (this.theme === "light") {
+        valueAxis.renderer.labels.template.fill = am4core.color("#111111");
+        dateAxis.renderer.labels.template.fill = am4core.color("#111111");
+        chart.legend.labels.template.fill = am4core.color("#111111");
 
-/*
-      // SLIDER (WIP)
-      var sliderContainer = chart.bottomAxesContainer.createChild(am4core.Container);
-      sliderContainer.width = am4core.percent(100);
-      sliderContainer.layout = "horizontal";
-
-      var playButton = sliderContainer.createChild(am4core.PlayButton);
-      playButton.valign = "middle";
-      playButton.events.on("toggled", function(event) {
-        if (event.target.isActive) {
-          playSlider();
-        }
-        else {
-          stopSlider();
-        }
-      })
-
-      var slider = sliderContainer.createChild(am4core.Slider);
-      slider.min = 0;
-      slider.max = 100;
-      slider.step = 1;
-      slider.valign = "middle";
-      slider.margin(0, 0, 0, 0);
-      slider.marginLeft = 30;
-      slider.height = 15;
-
-      slider.startGrip.events.on("drag", stop);
-
-      var sliderAnimation = slider.animate({ property: "start", to: 1 }, 800, am4core.ease.linear).pause();
-      sliderAnimation.events.on("animationended", function() {
-        playButton.isActive = false;
-      })
-
-      slider.events.on("rangechanged", function() {
-        for (var i = 0; i < chart.data.length; i++) {
-          var dataContext = chart.data[i];
-          dataContext.date = data[i].date;
-          dataContext.cases = data[i].cases;
-        }
-
-        chart.invalidateRawData();
-
-      //  label.text = year.toString();
-      })
-
-
-      function playSlider() {
-        if (slider) {
-          if (slider.start >= 1) {
-            slider.start = 0;
-            sliderAnimation.start();
-          }
-
-          sliderAnimation.setProgress(slider.start);
-
-          sliderAnimation.resume();
-          playButton.isActive = true;
-        }
       }
-
-      function stopSlider() {
-        sliderAnimation.pause();
-        playButton.isActive = false;
-      }
-
-*/
-/*
-      let scrollbarX = new am4charts.XYChartScrollbar();
-      scrollbarX.series.push(series);
-      chart.scrollbarX = scrollbarX;
-*/
 
       this.chart = chart;
 
@@ -441,7 +391,43 @@ export default {
       hs.properties.fill = am4core.color("#3c5bdc");
 
 
+    },
+    _addDarkTheme: function() {
+      this.theme = "dark";
+      this.getGraphData();
+
+      let darkThemeLinkEl = document.createElement("link");
+      darkThemeLinkEl.setAttribute("rel", "stylesheet");
+      darkThemeLinkEl.setAttribute("href", "/css/darktheme.css");
+      darkThemeLinkEl.setAttribute("id", "dark-theme-style");
+
+      let docHead = document.querySelector("head");
+      docHead.append(darkThemeLinkEl);
+
+      document.getElementById("switch").innerHTML = '<i class="far fa-sun fa-2x"></i>';
+      document.getElementById("switch").style.color = "#dedede";
+
+    },
+    _removeDarkTheme: function() {
+      this.theme = "light";
+      this.getGraphData();
+
+      let darkThemeLinkEl = document.querySelector("#dark-theme-style");
+      let parentNode = darkThemeLinkEl.parentNode;
+      parentNode.removeChild(darkThemeLinkEl);
+
+      document.getElementById("switch").innerHTML = '<i class="far fa-moon fa-2x"></i>';
+      document.getElementById("switch").style.color = "#111111";
+
+    },
+    darkThemeSwitch: function() {
+      let darkThemeLinkEl = document.querySelector("#dark-theme-style");
+      if (!darkThemeLinkEl) {
+        this._addDarkTheme()
+      } else {
+        this._removeDarkTheme()
     }
+  }
 },
   mounted () {
     this.show=true;
@@ -462,38 +448,11 @@ export default {
 
 <style lang="css" scoped>
 [v-cloak] {display: none}
-#main-box {
-  background-color:#f4f4f4;
-  border:0px;
-}
-.green {
-  color:#42b983;
-}
-.red {
-  color:#d63200;
-}
-.grey {
-  color: #21afdd;
-}
-.fade-leave-active {
-  transition: opacity 2s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-#page {
-  display:block;
-}
-.hello {
-  height:400px;
-}
-#mapdiv {
-  width:100%;
-  height:600px;
-}
-.top-left {
+#switch {
+  cursor:pointer;
+
   position:fixed;
-  top:1%;
-  left:1%;
+  top:2%;
+  right:2%;
 }
 </style>

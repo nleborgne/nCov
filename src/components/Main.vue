@@ -398,7 +398,7 @@ export default {
 
       let darkThemeLinkEl = document.createElement("link");
       darkThemeLinkEl.setAttribute("rel", "stylesheet");
-      darkThemeLinkEl.setAttribute("href", "<%= BASE_URL %>/css/darktheme.css");
+      darkThemeLinkEl.setAttribute("href", "/public/css/darktheme.css");
       darkThemeLinkEl.setAttribute("id", "dark-theme-style");
 
       let docHead = document.querySelector("head");

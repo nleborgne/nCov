@@ -453,6 +453,6 @@ export default {
 
   position:fixed;
   top:2%;
-  right:2%;
+  left:1%;
 }
 </style>

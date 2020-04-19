@@ -2,6 +2,79 @@
 
 <div id="app" v-cloak>
 
+  <modal v-if="showModal1">
+    <h3 slot="header">Stay safe</h3>
+
+    <div slot="body">
+      <p>In order to stop the spread of Covid-19, it is important that every one of us take prorective measures, in order to protect ourselves and the others.</p>
+      <p>Here are a few tips from <a href="https://www.who.int/emergencies/diseases/novel-coronavirus-2019" target="_blank">WHO</a> about basic protective measures against the virus.</p>
+      <img src="coronavirus.png" alt="" style="width:100px; display:block;margin-left:auto;margin-right:auto;">
+    </div>
+
+    <div slot="footer">
+      <button class="btn btn-secondary mr-4" type="button" name="button" @click="showModal1 = false;">
+        Skip
+      </button>
+      <button class="btn btn-dark" @click="showModal1 = false; showModal2 = true;">
+        Next&nbsp;<i class="fas fa-long-arrow-alt-right"></i>
+      </button>
+    </div>
+  </modal>
+
+  <modal v-if="showModal2" @close="showModal2 = false; showModal3 = true;">
+    <h3 slot="header">Wash your hands frequently</h3>
+
+    <div slot="body">
+      <p>Regularly and thoroughly clean your hands with an alcohol-based hand rub or wash them with soap and water.</p>
+      <p><strong>Why?</strong> Washing your hands with soap and water or using alcohol-based hand rub kills viruses that may be on your hands.</p>
+      <img src="hand-wash.png" alt="" style="width:100px; display:block;margin-left:auto;margin-right:auto;">
+    </div>
+
+    <div slot="footer">
+      <button class="btn btn-secondary mr-4" type="button" name="button" @click="showModal2 = false;">
+        Skip
+      </button>
+      <button class="btn btn-dark" @click="showModal2 = false; showModal3 = true;">
+        Next&nbsp;<i class="fas fa-long-arrow-alt-right"></i>
+      </button>
+    </div>
+  </modal>
+
+  <modal v-if="showModal3" @close="showModal3 = false; showModal4 = true;">
+    <h3 slot="header">Maintain social distancing</h3>
+
+    <div slot="body">
+      <p>Maintain at least 1 metre (3 feet) distance between yourself and anyone who is coughing or sneezing.</p>
+      <p><strong>Why?</strong> When someone coughs or sneezes they spray small liquid droplets from their nose or mouth which may contain virus. If you are too close, you can breathe in the droplets, including the COVID-19 virus if the person coughing has the disease.</p>
+      <img src="distance.png" alt="" style="width:100px; display:block;margin-left:auto;margin-right:auto;">
+    </div>
+
+    <div slot="footer">
+      <button class="btn btn-secondary mr-4" type="button" name="button" @click="showModal3 = false;">
+        Skip
+      </button>
+      <button class="btn btn-dark" @click="showModal3 = false; showModal4 = true;">
+        Next&nbsp;<i class="fas fa-long-arrow-alt-right"></i>
+      </button>
+    </div>
+  </modal>
+
+  <modal v-if="showModal4" @close="showModal4 = false;">
+    <h3 slot="header">If you have fever, cough and difficulty breathing, seek medical care early</h3>
+
+    <div slot="body">
+      <p>Stay home if you feel unwell. If you have a fever, cough and difficulty breathing, seek medical attention and call in advance. Follow the directions of your local health authority.</p>
+      <p><strong>Why?</strong> National and local authorities will have the most up to date information on the situation in your area. Calling in advance will allow your health care provider to quickly direct you to the right health facility. This will also protect you and help prevent spread of viruses and other infections.</p>
+      <img src="sneezing.png" alt="" style="width:100px; display:block;margin-left:auto;margin-right:auto;">
+    </div>
+
+    <div slot="footer">
+      <button class="btn btn-success" type="button" name="button" @click="showModal4 = false;">
+        I'll stay safe!
+      </button>
+    </div>
+  </modal>
+
   <loading :active.sync="isLoading"
   :is-full-page="fullPage"
   :opacity="0.9"></loading>
@@ -65,6 +138,10 @@
       </div>
   </div>
 
+  <div id="main-box" class="col-11 mx-auto text-center shadow-sm rounded my-4 py-2">
+      Last update: {{updated}}
+  </div>
+
 </div>
 
       <div class="col-xs-12 col-md-10 mt-4 mx-auto">
@@ -79,8 +156,6 @@
   <footer class="footer">
     <div class="container">
       <span id="madeby" class="text-muted">made by <a href="https://builtbynlb.com/" target="_blank">nlb</a></span>
-      <span>&nbsp;|&nbsp;</span>
-      <span>last update : {{updated}}</span>
       <span>&nbsp;|&nbsp;</span>
       <span>Stay safe <i class="fas fa-heart"></i></span>
 
@@ -102,15 +177,22 @@ import am4geodata_worldLow from "@amcharts/amcharts4-geodata/worldLow";
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 
-
 am4core.useTheme(am4themes_animated);
+
+import Modal from './Modal.vue';
+
 
 export default {
   components: {
-    Loading
+    Loading,
+    Modal
   },
   data () {
     return {
+      showModal1:true,
+      showModal2:false,
+      showModal3:false,
+      showModal4:false,
       isLoading: false,
       fullPage: true,
       show:false,
@@ -138,6 +220,12 @@ export default {
     }
   },
   methods: {
+    modalSwitch: function(first,last) {
+
+      first = false;
+      last = true;
+
+    },
     getData: function() {
       this.isLoading = true;
       axios
@@ -398,7 +486,7 @@ export default {
 
       let darkThemeLinkEl = document.createElement("link");
       darkThemeLinkEl.setAttribute("rel", "stylesheet");
-      darkThemeLinkEl.setAttribute("href", "/nCov/css/darktheme.css");
+      darkThemeLinkEl.setAttribute("href", "/css/darktheme.css");
       darkThemeLinkEl.setAttribute("id", "dark-theme-style");
 
       let docHead = document.querySelector("head");

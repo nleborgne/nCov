@@ -480,7 +480,7 @@ export default {
 
       let darkThemeLinkEl = document.createElement("link");
       darkThemeLinkEl.setAttribute("rel", "stylesheet");
-      darkThemeLinkEl.setAttribute("href", "/css/darktheme.css");
+      darkThemeLinkEl.setAttribute("href", "/nCov/css/darktheme.css");
       darkThemeLinkEl.setAttribute("id", "dark-theme-style");
 
       let docHead = document.querySelector("head");

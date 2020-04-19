@@ -220,12 +220,6 @@ export default {
     }
   },
   methods: {
-    modalSwitch: function(first,last) {
-
-      first = false;
-      last = true;
-
-    },
     getData: function() {
       this.isLoading = true;
       axios

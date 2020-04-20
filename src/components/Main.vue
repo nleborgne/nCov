@@ -6,7 +6,7 @@
     <h3 slot="header">Stay safe</h3>
 
     <div slot="body">
-      <p>In order to stop the spread of Covid-19, it is important that every one of us take prorective measures, in order to protect ourselves and the others.</p>
+      <p>In order to stop the spread of Covid-19, it is important that every one of us take measures, in order to protect ourselves and the others.</p>
       <p>Here are a few tips from <a href="https://www.who.int/emergencies/diseases/novel-coronavirus-2019" target="_blank">WHO</a> about basic protective measures against the virus.</p>
       <img src="coronavirus.png" alt="" style="width:100px; display:block;margin-left:auto;margin-right:auto;">
     </div>

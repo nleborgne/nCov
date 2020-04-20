@@ -330,7 +330,7 @@ export default {
           this.graphDataApi = response.data.timeline;
 
           for(var date of Object.keys(this.graphDataApi.cases)) {
-            data.push({'date':date,cases:this.graphDataApi.cases[date],deaths:this.graphDataApi.deaths[date]})
+            data.push({'date':date,cases:this.graphDataApi.cases[date],deaths:this.graphDataApi.deaths[date],recovered:this.graphDataApi.recovered[date]})
           }
 
           this.createGraph(data);
@@ -349,12 +349,14 @@ export default {
             for(var i = 0; i < Object.values(this.graphDataApi[0].timeline.cases).length; i++) {
               var sumCases = 0;
               var sumDeaths = 0;
+              var sumRecovered = 0;
               for(var j = 0; j < this.graphDataApi.length; j++) {
                 sumCases += Object.values(this.graphDataApi[j].timeline.cases)[i];
                 sumDeaths += Object.values(this.graphDataApi[j].timeline.deaths)[i];
+                sumRecovered += Object.values(this.graphDataApi[j].timeline.recovered)[i];
               }
 
-              data.push({date:'',cases:sumCases,deaths:sumDeaths})
+              data.push({date:'',cases:sumCases,deaths:sumDeaths,recovered:sumRecovered})
             }
 
             for(var k = 0; k < Object.values(this.graphDataApi[0].timeline.cases).length; k++) {
@@ -408,12 +410,25 @@ export default {
       var bullet2 = series2.bullets.push(new am4charts.CircleBullet());
       bullet2.circle.radius = 2;
 
+      let series3 = chart.series.push(new am4charts.LineSeries());
+      series3.name = "Recovered"
+      series3.dataFields.dateX = "date";
+      series3.dataFields.valueY = "recovered";
+      series3.stroke = am4core.color("#42b983");
+      series3.tensionX = 1;
+      series3.tensionY = 1;
+      var bullet3 = series3.bullets.push(new am4charts.CircleBullet());
+      bullet3.circle.radius = 2;
+
       series.tooltipText = "Cases: {valueY.value}";
       series.fill = am4core.color("#21afdd");
       series.strokeWidth = 3;
       series2.tooltipText = "Deaths: {valueY.value}";
       series2.fill = am4core.color("#d63200");
       series2.strokeWidth = 3;
+      series3.tooltipText = "Recovered: {valueY.value}";
+      series3.fill = am4core.color("#42b983");
+      series3.strokeWidth = 3;
       chart.cursor = new am4charts.XYCursor();
 
       chart.legend = new am4charts.Legend();

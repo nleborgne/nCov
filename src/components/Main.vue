@@ -106,14 +106,14 @@
     </div>
 
     <h4 class="mx-auto mt-4">{{selectedCountry}} <img v-if="selectedCountry != 'World'" :src="countryImg" alt="" style="max-width:50px;height:auto;"> </h4>
-    <div class="row mb-4">
+    <div class="row">
 
       <div class="card shadow mx-auto mt-4" v-if="show" id="main-box" style="width: 18rem;">
         <div class="card-body">
           <h5 class="card-title">Cases</h5>
           <span class="card-text">
-            <h3 class="grey">{{cases}}</h3>
-            <h5 v-if='todayCases > 0' class="grey">+ {{todayCases}} today</h5>
+            <h3 class="lightblue">{{cases.toLocaleString()}}</h3>
+            <h5 v-if='todayCases > 0' class="lightblue">+ {{todayCases.toLocaleString()}} today</h5>
           </span>
         </div>
     </div>
@@ -122,8 +122,8 @@
       <div class="card-body">
         <h5 class="card-title">Deaths</h5>
         <span class="card-text">
-          <h3 class="red">{{deaths}}</h3>
-          <h5 v-if='todayDeaths > 0' class="red">+ {{todayDeaths}} today</h5>
+          <h3 class="red">{{deaths.toLocaleString()}}</h3>
+          <h5 v-if='todayDeaths > 0' class="red">+ {{todayDeaths.toLocaleString()}} today</h5>
         </span>
       </div>
   </div>
@@ -132,17 +132,53 @@
       <div class="card-body">
         <h5 class="card-title">Recovered</h5>
         <span class="card-text">
-          <h3 class="green">{{recovered}}</h3>
-          <h5 v-if='todayCases>0||todayDeaths>0' class="green">{{cases-deaths-recovered}} remaining</h5>
+          <h3 class="green">{{recovered.toLocaleString()}}</h3>
+          <h5 v-if='todayCases>0||todayDeaths>0' class="green">{{(cases-deaths-recovered).toLocaleString()}} remaining</h5>
         </span>
       </div>
   </div>
+</div>
+<div class="row mb-2">
 
-  <div id="main-box" class="col-11 mx-auto text-center shadow-sm rounded my-4 py-2">
-      Last update: {{updated}}
+    <div class="card shadow mx-auto mt-4" v-if="show" id="main-box" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">Active</h5>
+        <span class="card-text">
+          <h3 class="darkblue">{{active.toLocaleString()}}</h3>
+        </span>
+      </div>
+    </div>
+
+  <div class="card shadow mx-auto mt-4" v-if="show" id="main-box" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">Critical</h5>
+      <span class="card-text">
+        <h3 class="orange">{{critical.toLocaleString()}}</h3>
+      </span>
+    </div>
   </div>
 
+  <div class="card shadow mx-auto mt-4" v-if="show" id="main-box" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">Tests</h5>
+      <span class="card-text">
+        <h3 class="purple">{{tests.toLocaleString()}}</h3>
+      </span>
+    </div>
+  </div>
+
+
+  <div id="main-box" class="col-11 mx-auto text-center shadow-sm rounded my-4 py-2">
+    <span>
+      Last update: {{updated}}
+    </span>
+  </div>
+
+
 </div>
+
+<button class="btn btn-sm btn-primary mx-auto" @click="showModal1 = true">Advices from WHO</button>
+
 
       <div class="col-xs-12 col-md-10 mt-4 mx-auto">
           <div class="hello" ref="chartdiv"></div>
@@ -189,7 +225,7 @@ export default {
   },
   data () {
     return {
-      showModal1:true,
+      showModal1:false,
       showModal2:false,
       showModal3:false,
       showModal4:false,
@@ -201,7 +237,9 @@ export default {
       deaths:0,
       todayDeaths:0,
       recovered:0,
+      active:0,
       critical:0,
+      tests:0,
       updated:null,
 
       dataWorld: null,
@@ -256,11 +294,14 @@ export default {
     },
     updateData: function(country) {
       if(country === 'World') {
-        this.todayCases = 0;
-        this.todayDeaths = 0;
         gsap.to(this.$data, 3, { cases: this.dataWorld.cases,roundProps:"cases",ease: "expo.out" } );
+        gsap.to(this.$data, 3, { todayCases: this.dataWorld.todayCases,roundProps:"todayCases",ease: "expo.out" } );
         gsap.to(this.$data, 3, { deaths: this.dataWorld.deaths,roundProps:"deaths",ease: "expo.out" } );
+        gsap.to(this.$data, 3, { todayDeaths: this.dataWorld.todayDeaths,roundProps:"todayDeaths",ease: "expo.out" } );
         gsap.to(this.$data, 3, { recovered: this.dataWorld.recovered,roundProps:"recovered",ease: "expo.out" } );
+        gsap.to(this.$data, 3, { active: this.dataWorld.active,roundProps:"active",ease: "expo.out" } );
+        gsap.to(this.$data, 3, { critical: this.dataWorld.critical,roundProps:"critical",ease: "expo.out" } );
+        gsap.to(this.$data, 3, { tests: this.dataWorld.tests,roundProps:"tests",ease: "expo.out" } );
       } else {
         for (var countryInfos of this.dataCountries) {
           if(countryInfos.country == country) {
@@ -269,6 +310,9 @@ export default {
             gsap.to(this.$data, 3, { deaths: countryInfos.deaths,roundProps:"deaths",ease: "expo.out" } );
             gsap.to(this.$data, 3, { todayDeaths: countryInfos.todayDeaths,roundProps:"todayDeaths",ease: "expo.out" } );
             gsap.to(this.$data, 3, { recovered: countryInfos.recovered,roundProps:"recovered",ease: "expo.out" } );
+            gsap.to(this.$data, 3, { active: countryInfos.active,roundProps:"active",ease: "expo.out" } );
+            gsap.to(this.$data, 3, { critical: countryInfos.critical,roundProps:"critical",ease: "expo.out" } );
+            gsap.to(this.$data, 3, { tests: countryInfos.tests,roundProps:"tests",ease: "expo.out" } );
             this.countryImg = countryInfos.countryInfo.flag;
             break;
           }

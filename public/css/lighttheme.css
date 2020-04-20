@@ -8,8 +8,17 @@
 .red {
   color:#d63200;
 }
-.grey {
+.lightblue {
   color: #21afdd;
+}
+.darkblue {
+  color: #084177;
+}
+.orange {
+  color: #feb72b;
+}
+.purple {
+  color: #4d089a;
 }
 .fade-leave-active {
   transition: opacity 2s;

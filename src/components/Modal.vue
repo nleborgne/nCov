@@ -66,9 +66,9 @@ export default {
     width:100%;
   }
 }
-.modal-header h3 {
+.modal-header {
   margin-top: 0;
-  color: #42b983;
+  text-align: left;
 }
 
 .modal-body {

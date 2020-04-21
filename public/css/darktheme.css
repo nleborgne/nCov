@@ -41,3 +41,6 @@ li.el-select-dropdown__item.hover {
 .purple {
   color: #b590ca;
 }
+.modal-container {
+  background-color: #333;
+}

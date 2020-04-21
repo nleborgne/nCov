@@ -180,12 +180,19 @@
 <button class="btn btn-sm btn-primary mx-auto" @click="showModal1 = true">Advices from WHO</button>
 
 
-      <div class="col-xs-12 col-md-10 mt-4 mx-auto">
+      <div class="col-xs-12 col-md-10 my-5 mx-auto">
           <div class="hello" ref="chartdiv"></div>
       </div>
-      <h5>world map</h5>
-      <div class="col-12 mt-4 mx-auto">
-          <div class="hello" id="mapdiv"></div>
+      <div class="col-12 mt-5 mx-auto row">
+        <div class="col-xs-12 col-md-5">
+          <h5>Countries with most cases per million inhabitants</h5>
+          <div id="barchart" ref="bardiv"></div>
+        </div>
+        <div class=" col-xs-12 col-md-7">
+          <h5>world map</h5>
+          <div id="mapdiv"></div>
+        </div>
+
       </div>
 
   </div>
@@ -208,6 +215,7 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import * as am4maps from "@amcharts/amcharts4/maps";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import am4themes_dark from "@amcharts/amcharts4/themes/dark";
 import am4geodata_worldLow from "@amcharts/amcharts4-geodata/worldLow";
 
 import Loading from 'vue-loading-overlay';
@@ -216,7 +224,6 @@ import 'vue-loading-overlay/dist/vue-loading.css';
 am4core.useTheme(am4themes_animated);
 
 import Modal from './Modal.vue';
-
 
 export default {
   components: {
@@ -289,6 +296,7 @@ export default {
             // this.dataCountries2 = response.data;
             this.updateData(this.selectedCountry);
             this.createMapChart();
+            this.createBarGraph();
 
           })
     },
@@ -375,6 +383,87 @@ export default {
           })
       }
     },
+    createBarGraph: function() {
+
+      var arrayCases = {};
+
+      // Removed islands/small countries/principalties because too population is too small to be representative
+      var blacklist = ["San Marino","Andorra","Holy See (Vatican City State)","Luxembourg","Gibraltar","Faroe Islands","Isle of Man","Falkland Islands (Malvinas)","Channel Islands","Monaco","Montserrat","Liechtenstein","Iceland"];
+
+      for(var i = 0; i < this.dataCountries.length; i++) {
+        var datum = this.dataCountries[i];
+        if(!blacklist.includes(datum.country)) {
+          arrayCases[datum.country] = {casesPerOneMillion: datum.casesPerOneMillion,flag: datum.flag};
+        }
+      }
+
+
+      var arrayBiggest = [];
+
+      for(var k = 0; k < 5; k++) {
+        var biggest = 0;
+        var keyCountry = "";
+        let flag = ""
+
+        for (var j = 0; j < Object.keys(arrayCases).length; j++) {
+          var cases = arrayCases[Object.keys(arrayCases)[j]].casesPerOneMillion;
+            if(cases > biggest) {
+              biggest = cases;
+              keyCountry = Object.keys(arrayCases)[j];
+              flag = arrayCases[Object.keys(arrayCases)[j]].flag;
+          }
+        }
+        delete arrayCases[keyCountry];
+        arrayBiggest.push({
+          country:keyCountry,
+          casesPerOneMillion: biggest,
+          img:flag
+        });
+      }
+
+      let barChart = am4core.create(this.$refs.bardiv, am4charts.XYChart);
+      barChart.data = arrayBiggest;
+
+      // Create axes
+      var categoryAxis = barChart.yAxes.push(new am4charts.CategoryAxis());
+      categoryAxis.dataFields.category = "country";
+      categoryAxis.renderer.inversed = true;
+      categoryAxis.renderer.grid.template.location = 0;
+
+      var valueAxis = barChart.xAxes.push(new am4charts.ValueAxis());
+      valueAxis.renderer.opposite = true;
+
+      let series = barChart.series.push(new am4charts.ColumnSeries());
+      series.dataFields.categoryY = "country";
+      series.dataFields.valueX = "casesPerOneMillion";
+
+      series.columns.template.adapter.add("fill", function(fill, target) {
+        return barChart.colors.getIndex(target.dataItem.index);
+      });
+
+      var image = new am4core.Image();
+      image.horizontalCenter = "middle";
+      image.width = 20;
+      image.height = 20;
+      image.verticalCenter = "middle";
+      image.adapter.add("href", (href, target)=>{
+        let category = target.dataItem.category;
+        if(category){
+          return "https://www.amcharts.com/wp-content/uploads/flags/" + category.split(" ").join("-").toLowerCase() + ".svg";
+        }
+        return href;
+      })
+      categoryAxis.dataItems.template.bullet = image;
+
+      barChart.cursor = new am4charts.XYCursor();
+      barChart.cursor.behavior = "zoomY";
+
+      barChart.responsive.enabled = true;
+
+
+      this.chart = barChart;
+
+    },
     createGraph: function(data) {
 
       // Creation of the chart
@@ -435,17 +524,6 @@ export default {
 
       chart.responsive.enabled = true;
 
-      if(this.theme === "dark") {
-        valueAxis.renderer.labels.template.fill = am4core.color("#dedede");
-        dateAxis.renderer.labels.template.fill = am4core.color("#dedede");
-        chart.legend.labels.template.fill = am4core.color("#dedede");
-      } else if (this.theme === "light") {
-        valueAxis.renderer.labels.template.fill = am4core.color("#111111");
-        dateAxis.renderer.labels.template.fill = am4core.color("#111111");
-        chart.legend.labels.template.fill = am4core.color("#111111");
-
-      }
-
       this.chart = chart;
 
     },
@@ -462,6 +540,13 @@ export default {
         })
     },
     createMapChart: function() {
+
+      if(this.theme === "dark") {
+        am4core.useTheme(am4themes_dark);
+      } else if (this.theme === "light") {
+        am4core.useTheme(am4themes_animated);
+      }
+
       let map = am4core.create("mapdiv", am4maps.MapChart);
       map.geodata = am4geodata_worldLow;
       map.projection = new am4maps.projections.Miller();
@@ -531,11 +616,14 @@ export default {
       var hs = polygonTemplate.states.create("hover");
       hs.properties.fill = am4core.color("#3c5bdc");
 
-
     },
     _addDarkTheme: function() {
       this.theme = "dark";
+      am4core.unuseTheme(am4themes_animated);
+      am4core.useTheme(am4themes_dark);
       this.getGraphData();
+      this.createBarGraph();
+      this.createMapChart();
 
       let darkThemeLinkEl = document.createElement("link");
       darkThemeLinkEl.setAttribute("rel", "stylesheet");
@@ -551,7 +639,11 @@ export default {
     },
     _removeDarkTheme: function() {
       this.theme = "light";
+      am4core.unuseTheme(am4themes_dark);
+      am4core.useTheme(am4themes_animated);
       this.getGraphData();
+      this.createBarGraph();
+      this.createMapChart();
 
       let darkThemeLinkEl = document.querySelector("#dark-theme-style");
       let parentNode = darkThemeLinkEl.parentNode;

@@ -184,10 +184,17 @@
           <div class="hello" ref="chartdiv"></div>
       </div>
       <div class="col-12 mt-5 mx-auto row">
-        <div class="col-xs-12 col-md-5">
-          <h5>Countries with most cases per million inhabitants</h5>
-          <div id="barchart" ref="bardiv"></div>
+        <div class="col">
+          <div class="col-xs-12 mb-2">
+            <h5>Countries with most cases (global)</h5>
+            <div id="barchart" ref="bar2div"></div>
+          </div>
+          <div class="col-xs-12">
+            <h5>Countries with most cases per million inhabitants</h5>
+            <div id="barchart" ref="bardiv"></div>
+          </div>
         </div>
+
         <div class=" col-xs-12 col-md-7">
           <h5>world map</h5>
           <div id="mapdiv"></div>
@@ -297,6 +304,7 @@ export default {
             this.updateData(this.selectedCountry);
             this.createMapChart();
             this.createBarGraph();
+            this.createBarGraph2();
 
           })
     },
@@ -450,6 +458,91 @@ export default {
         let category = target.dataItem.category;
         if(category){
           return "https://www.amcharts.com/wp-content/uploads/flags/" + category.split(" ").join("-").toLowerCase() + ".svg";
+        }
+        return href;
+      })
+      categoryAxis.dataItems.template.bullet = image;
+
+      barChart.cursor = new am4charts.XYCursor();
+      barChart.cursor.behavior = "zoomY";
+
+      barChart.responsive.enabled = true;
+
+
+      this.chart = barChart;
+
+    },
+    createBarGraph2: function() {
+
+      var arrayCases = {};
+
+      // Removed islands/small countries/principalties because too population is too small to be representative
+      var blacklist = ["San Marino","Andorra","Holy See (Vatican City State)","Luxembourg","Gibraltar","Faroe Islands","Isle of Man","Falkland Islands (Malvinas)","Channel Islands","Monaco","Montserrat","Liechtenstein","Iceland"];
+
+      for(var i = 0; i < this.dataCountries.length; i++) {
+        var datum = this.dataCountries[i];
+        if(!blacklist.includes(datum.country)) {
+          arrayCases[datum.country] = {cases: datum.cases,flag: datum.flag};
+        }
+      }
+
+
+      var arrayBiggest = [];
+
+      for(var k = 0; k < 5; k++) {
+        var biggest = 0;
+        var keyCountry = "";
+        let flag = ""
+
+        for (var j = 0; j < Object.keys(arrayCases).length; j++) {
+          var cases = arrayCases[Object.keys(arrayCases)[j]].cases;
+            if(cases > biggest) {
+              biggest = cases;
+              keyCountry = Object.keys(arrayCases)[j];
+              flag = arrayCases[Object.keys(arrayCases)[j]].flag;
+          }
+        }
+        delete arrayCases[keyCountry];
+        arrayBiggest.push({
+          country:keyCountry,
+          cases: biggest,
+          img:flag
+        });
+      }
+
+      let barChart = am4core.create(this.$refs.bar2div, am4charts.XYChart);
+      barChart.data = arrayBiggest;
+
+      // Create axes
+      var categoryAxis = barChart.yAxes.push(new am4charts.CategoryAxis());
+      categoryAxis.dataFields.category = "country";
+      categoryAxis.renderer.inversed = true;
+      categoryAxis.renderer.grid.template.location = 0;
+
+      var valueAxis = barChart.xAxes.push(new am4charts.ValueAxis());
+      valueAxis.renderer.opposite = true;
+
+      let series = barChart.series.push(new am4charts.ColumnSeries());
+      series.dataFields.categoryY = "country";
+      series.dataFields.valueX = "cases";
+
+      series.columns.template.adapter.add("fill", function(fill, target) {
+        return barChart.colors.getIndex(target.dataItem.index);
+      });
+
+      var image = new am4core.Image();
+      image.horizontalCenter = "middle";
+      image.width = 20;
+      image.height = 20;
+      image.verticalCenter = "middle";
+      image.adapter.add("href", (href, target)=>{
+        let category = target.dataItem.category;
+        if(category){
+          if(category == "USA") {
+            return "https://www.amcharts.com/wp-content/uploads/flags/united-states.svg";
+          } else {
+            return "https://www.amcharts.com/wp-content/uploads/flags/" + category.split(" ").join("-").toLowerCase() + ".svg";
+          }
         }
         return href;
       })
@@ -623,6 +716,7 @@ export default {
       am4core.useTheme(am4themes_dark);
       this.getGraphData();
       this.createBarGraph();
+      this.createBarGraph2();
       this.createMapChart();
 
       let darkThemeLinkEl = document.createElement("link");
@@ -643,6 +737,7 @@ export default {
       am4core.useTheme(am4themes_animated);
       this.getGraphData();
       this.createBarGraph();
+      this.createBarGraph2();
       this.createMapChart();
 
       let darkThemeLinkEl = document.querySelector("#dark-theme-style");

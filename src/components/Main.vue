@@ -540,6 +540,8 @@ export default {
         if(category){
           if(category == "USA") {
             return "https://www.amcharts.com/wp-content/uploads/flags/united-states.svg";
+          } else if(category == "UK") {
+            return "https://www.amcharts.com/wp-content/uploads/flags/united-kingdom.svg";
           } else {
             return "https://www.amcharts.com/wp-content/uploads/flags/" + category.split(" ").join("-").toLowerCase() + ".svg";
           }

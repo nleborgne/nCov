@@ -396,7 +396,7 @@ export default {
       var arrayCases = {};
 
       // Removed islands/small countries/principalties because too population is too small to be representative
-      var blacklist = ["San Marino","Andorra","Holy See (Vatican City State)","Luxembourg","Gibraltar","Faroe Islands","Isle of Man","Falkland Islands (Malvinas)","Channel Islands","Monaco","Montserrat","Liechtenstein","Iceland"];
+      var blacklist = ["San Marino","Andorra","Holy See (Vatican City State)","Luxembourg","Gibraltar","Faroe Islands","Isle of Man","Falkland Islands (Malvinas)","Channel Islands","Monaco","Montserrat","Liechtenstein","Iceland","Mayotte"];
 
       for(var i = 0; i < this.dataCountries.length; i++) {
         var datum = this.dataCountries[i];
@@ -457,7 +457,13 @@ export default {
       image.adapter.add("href", (href, target)=>{
         let category = target.dataItem.category;
         if(category){
-          return "https://www.amcharts.com/wp-content/uploads/flags/" + category.split(" ").join("-").toLowerCase() + ".svg";
+          if(category == "USA") {
+            return "https://www.amcharts.com/wp-content/uploads/flags/united-states.svg";
+          } else if(category == "UK") {
+            return "https://www.amcharts.com/wp-content/uploads/flags/united-kingdom.svg";
+          } else {
+            return "https://www.amcharts.com/wp-content/uploads/flags/" + category.split(" ").join("-").toLowerCase() + ".svg";
+          }
         }
         return href;
       })
@@ -477,7 +483,7 @@ export default {
       var arrayCases = {};
 
       // Removed islands/small countries/principalties because too population is too small to be representative
-      var blacklist = ["San Marino","Andorra","Holy See (Vatican City State)","Luxembourg","Gibraltar","Faroe Islands","Isle of Man","Falkland Islands (Malvinas)","Channel Islands","Monaco","Montserrat","Liechtenstein","Iceland"];
+      var blacklist = ["San Marino","Andorra","Holy See (Vatican City State)","Luxembourg","Gibraltar","Faroe Islands","Isle of Man","Falkland Islands (Malvinas)","Channel Islands","Monaco","Montserrat","Liechtenstein","Iceland","Mayotte"];
 
       for(var i = 0; i < this.dataCountries.length; i++) {
         var datum = this.dataCountries[i];

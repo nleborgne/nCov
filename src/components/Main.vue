@@ -83,8 +83,6 @@
 
   <div id="page" class="col-10 mx-auto">
 
-    <a id="switch" @click="darkThemeSwitch"><i class="far fa-moon fa-2x"></i></a>
-
     <div class="col-xs-10 col-md-6 mx-auto">
 
       <el-select
@@ -222,7 +220,6 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import * as am4maps from "@amcharts/amcharts4/maps";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4themes_dark from "@amcharts/amcharts4/themes/dark";
 import am4geodata_worldLow from "@amcharts/amcharts4-geodata/worldLow";
 
 import Loading from 'vue-loading-overlay';
@@ -268,7 +265,6 @@ export default {
       selectedCountry:'World',
       countryImg: null,
       graphNames:['Confirmed','Deaths'],
-      theme:'light'
     }
   },
   methods: {
@@ -642,12 +638,6 @@ export default {
     },
     createMapChart: function() {
 
-      if(this.theme === "dark") {
-        am4core.useTheme(am4themes_dark);
-      } else if (this.theme === "light") {
-        am4core.useTheme(am4themes_animated);
-      }
-
       let map = am4core.create("mapdiv", am4maps.MapChart);
       map.geodata = am4geodata_worldLow;
       map.projection = new am4maps.projections.Miller();
@@ -718,52 +708,6 @@ export default {
       hs.properties.fill = am4core.color("#3c5bdc");
 
     },
-    _addDarkTheme: function() {
-      this.theme = "dark";
-      am4core.unuseTheme(am4themes_animated);
-      am4core.useTheme(am4themes_dark);
-      this.getGraphData();
-      this.createBarGraph();
-      this.createBarGraph2();
-      this.createMapChart();
-
-      let darkThemeLinkEl = document.createElement("link");
-      darkThemeLinkEl.setAttribute("rel", "stylesheet");
-      darkThemeLinkEl.setAttribute("href", "/nCov/css/darktheme.css");
-      darkThemeLinkEl.setAttribute("id", "dark-theme-style");
-
-      let docHead = document.querySelector("head");
-      docHead.append(darkThemeLinkEl);
-
-      document.getElementById("switch").innerHTML = '<i class="far fa-sun fa-2x"></i>';
-      document.getElementById("switch").style.color = "#dedede";
-
-    },
-    _removeDarkTheme: function() {
-      this.theme = "light";
-      am4core.unuseTheme(am4themes_dark);
-      am4core.useTheme(am4themes_animated);
-      this.getGraphData();
-      this.createBarGraph();
-      this.createBarGraph2();
-      this.createMapChart();
-
-      let darkThemeLinkEl = document.querySelector("#dark-theme-style");
-      let parentNode = darkThemeLinkEl.parentNode;
-      parentNode.removeChild(darkThemeLinkEl);
-
-      document.getElementById("switch").innerHTML = '<i class="far fa-moon fa-2x"></i>';
-      document.getElementById("switch").style.color = "#111111";
-
-    },
-    darkThemeSwitch: function() {
-      let darkThemeLinkEl = document.querySelector("#dark-theme-style");
-      if (!darkThemeLinkEl) {
-        this._addDarkTheme()
-      } else {
-        this._removeDarkTheme()
-    }
-  }
 },
   mounted () {
     this.show=true;

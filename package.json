@@ -26,10 +26,12 @@
     "vue-axios": "^2.1.5"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.11.0",
     "@vue/cli-plugin-babel": "^4.4.6",
     "@vue/cli-plugin-eslint": "^4.4.6",
     "@vue/cli-service": "^4.4.6",
     "babel-eslint": "^10.0.3",
+    "babel-plugin-component": "^1.1.1",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.1.2",
     "vue-template-compiler": "^2.6.11"

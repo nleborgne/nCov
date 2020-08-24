@@ -13,7 +13,7 @@ import VueAxios from 'vue-axios'
 Vue.use(VueAxios, axios)
 
 import {Select, Option} from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+// import 'element-ui/lib/theme-chalk/index.css'
 Vue.component(Select.name, Select)
 Vue.component(Option.name, Option)
 

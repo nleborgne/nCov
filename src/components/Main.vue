@@ -69,15 +69,11 @@
     </div>
 
     <div slot="footer">
-      <button class="btn btn-success" type="button" name="button" @click="showModal4 = false;">
+      <button class="btn btn-primary" type="button" name="button" @click="showModal4 = false;">
         I'll stay safe!
       </button>
     </div>
   </modal>
-
-  <loading :active.sync="isLoading"
-  :is-full-page="fullPage"
-  :opacity="0.9"></loading>
 
   <img src="virus.png" style="width:50px;margin-top:-50px;" class="mx-auto" alt="">
 
@@ -187,14 +183,10 @@
             <h5>Countries with most cases (global)</h5>
             <div id="barchart" ref="bar2div"></div>
           </div>
-          <div class="col-xs-12">
-            <h5>Countries with most cases per million inhabitants</h5>
-            <div id="barchart" ref="bardiv"></div>
-          </div>
         </div>
 
         <div class=" col-xs-12 col-md-7">
-          <h5>world map</h5>
+          <h5>World Map</h5>
           <div id="mapdiv"></div>
         </div>
 
@@ -222,16 +214,12 @@ import * as am4maps from "@amcharts/amcharts4/maps";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4geodata_worldLow from "@amcharts/amcharts4-geodata/worldLow";
 
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
-
 am4core.useTheme(am4themes_animated);
 
 import Modal from './Modal.vue';
 
 export default {
   components: {
-    Loading,
     Modal
   },
   data () {
@@ -240,8 +228,6 @@ export default {
       showModal2:false,
       showModal3:false,
       showModal4:false,
-      isLoading: false,
-      fullPage: true,
       show:false,
       cases:0,
       todayCases:0,
@@ -264,14 +250,12 @@ export default {
       countriesList: null,
       selectedCountry:'World',
       countryImg: null,
-      graphNames:['Confirmed','Deaths'],
     }
   },
   methods: {
     getData: function() {
-      this.isLoading = true;
       axios
-        .get('https://corona.lmao.ninja/v2/all')
+        .get('https://disease.sh/v3/covid-19/all')
         .then(response => {
           this.dataWorld = response.data;
 
@@ -289,22 +273,21 @@ export default {
           this.updated = day+'/'+month+'/'+new Date(this.dataWorld.updated).getFullYear()+' - '+hour+':'+minutes+':'+seconds;
         })
         axios
-          .get('https://corona.lmao.ninja/v2/countries')
+          .get('https://disease.sh/v3/covid-19/countries')
           .then(response => {
             this.dataCountries = response.data;
 
             for(let thisData of response.data) {
               this.dataCountriesMap.push({id:thisData.countryInfo.iso2,name:thisData.country,'value':thisData.cases});
             }
-            // this.dataCountries2 = response.data;
             this.updateData(this.selectedCountry);
             this.createMapChart();
             this.createBarGraph();
-            this.createBarGraph2();
 
           })
     },
     updateData: function(country) {
+      this.getGraphData();
       if(country === 'World') {
         gsap.to(this.$data, 3, { cases: this.dataWorld.cases,roundProps:"cases",ease: "expo.out" } );
         gsap.to(this.$data, 3, { todayCases: this.dataWorld.todayCases,roundProps:"todayCases",ease: "expo.out" } );
@@ -315,29 +298,24 @@ export default {
         gsap.to(this.$data, 3, { critical: this.dataWorld.critical,roundProps:"critical",ease: "expo.out" } );
         gsap.to(this.$data, 3, { tests: this.dataWorld.tests,roundProps:"tests",ease: "expo.out" } );
       } else {
-        for (var countryInfos of this.dataCountries) {
-          if(countryInfos.country == country) {
-            gsap.to(this.$data, 3, { cases: countryInfos.cases,roundProps:"cases",ease: "expo.out" } );
-            gsap.to(this.$data, 3, { todayCases: countryInfos.todayCases,roundProps:"todayCases",ease: "expo.out" } );
-            gsap.to(this.$data, 3, { deaths: countryInfos.deaths,roundProps:"deaths",ease: "expo.out" } );
-            gsap.to(this.$data, 3, { todayDeaths: countryInfos.todayDeaths,roundProps:"todayDeaths",ease: "expo.out" } );
-            gsap.to(this.$data, 3, { recovered: countryInfos.recovered,roundProps:"recovered",ease: "expo.out" } );
-            gsap.to(this.$data, 3, { active: countryInfos.active,roundProps:"active",ease: "expo.out" } );
-            gsap.to(this.$data, 3, { critical: countryInfos.critical,roundProps:"critical",ease: "expo.out" } );
-            gsap.to(this.$data, 3, { tests: countryInfos.tests,roundProps:"tests",ease: "expo.out" } );
-            this.countryImg = countryInfos.countryInfo.flag;
-            break;
-          }
-        }
+        let countryInfos = this.dataCountries.find(countryInfos => countryInfos.country === country);
+        gsap.to(this.$data, 3, { cases: countryInfos.cases,roundProps:"cases",ease: "expo.out" } );
+        gsap.to(this.$data, 3, { todayCases: countryInfos.todayCases,roundProps:"todayCases",ease: "expo.out" } );
+        gsap.to(this.$data, 3, { deaths: countryInfos.deaths,roundProps:"deaths",ease: "expo.out" } );
+        gsap.to(this.$data, 3, { todayDeaths: countryInfos.todayDeaths,roundProps:"todayDeaths",ease: "expo.out" } );
+        gsap.to(this.$data, 3, { recovered: countryInfos.recovered,roundProps:"recovered",ease: "expo.out" } );
+        gsap.to(this.$data, 3, { active: countryInfos.active,roundProps:"active",ease: "expo.out" } );
+        gsap.to(this.$data, 3, { critical: countryInfos.critical,roundProps:"critical",ease: "expo.out" } );
+        gsap.to(this.$data, 3, { tests: countryInfos.tests,roundProps:"tests",ease: "expo.out" } );
+        this.countryImg = countryInfos.countryInfo.flag;
       }
-      this.getGraphData();
     },
     getGraphData: function(){
       var data = [];
 
       if(this.selectedCountry != 'World') {
       axios
-        .get('https://corona.lmao.ninja/v2/historical/'+this.selectedCountry+'?lastdays=all')
+        .get('https://disease.sh/v3/covid-19/historical/'+this.selectedCountry+'?lastdays=all')
         .then(response => {
           this.graphDataApi = response.data.timeline;
 
@@ -347,12 +325,11 @@ export default {
 
           this.createGraph(data);
 
-          this.isLoading = false;
         })
       } else {
 
         axios
-          .get('https://corona.lmao.ninja/v2/historical?lastdays=all')
+          .get('https://disease.sh/v3/covid-19/historical?lastdays=all')
           .then(response => {
             this.graphDataApi = response.data;
 
@@ -381,8 +358,6 @@ export default {
 
             this.createGraph(data);
 
-            this.isLoading = false;
-
 
           })
       }
@@ -391,101 +366,9 @@ export default {
 
       var arrayCases = {};
 
-      // Removed islands/small countries/principalties because too population is too small to be representative
-      var blacklist = ["San Marino","Andorra","Holy See (Vatican City State)","Luxembourg","Gibraltar","Faroe Islands","Isle of Man","Falkland Islands (Malvinas)","Channel Islands","Monaco","Montserrat","Liechtenstein","Iceland","Mayotte"];
-
       for(var i = 0; i < this.dataCountries.length; i++) {
         var datum = this.dataCountries[i];
-        if(!blacklist.includes(datum.country)) {
-          arrayCases[datum.country] = {casesPerOneMillion: datum.casesPerOneMillion,flag: datum.flag};
-        }
-      }
-
-
-      var arrayBiggest = [];
-
-      for(var k = 0; k < 5; k++) {
-        var biggest = 0;
-        var keyCountry = "";
-        let flag = ""
-
-        for (var j = 0; j < Object.keys(arrayCases).length; j++) {
-          var cases = arrayCases[Object.keys(arrayCases)[j]].casesPerOneMillion;
-            if(cases > biggest) {
-              biggest = cases;
-              keyCountry = Object.keys(arrayCases)[j];
-              flag = arrayCases[Object.keys(arrayCases)[j]].flag;
-          }
-        }
-        delete arrayCases[keyCountry];
-        arrayBiggest.push({
-          country:keyCountry,
-          casesPerOneMillion: biggest,
-          img:flag
-        });
-      }
-
-      let barChart = am4core.create(this.$refs.bardiv, am4charts.XYChart);
-      barChart.data = arrayBiggest;
-
-      // Create axes
-      var categoryAxis = barChart.yAxes.push(new am4charts.CategoryAxis());
-      categoryAxis.dataFields.category = "country";
-      categoryAxis.renderer.inversed = true;
-      categoryAxis.renderer.grid.template.location = 0;
-
-      var valueAxis = barChart.xAxes.push(new am4charts.ValueAxis());
-      valueAxis.renderer.opposite = true;
-
-      let series = barChart.series.push(new am4charts.ColumnSeries());
-      series.dataFields.categoryY = "country";
-      series.dataFields.valueX = "casesPerOneMillion";
-
-      series.columns.template.adapter.add("fill", function(fill, target) {
-        return barChart.colors.getIndex(target.dataItem.index);
-      });
-
-      var image = new am4core.Image();
-      image.horizontalCenter = "middle";
-      image.width = 20;
-      image.height = 20;
-      image.verticalCenter = "middle";
-      image.adapter.add("href", (href, target)=>{
-        let category = target.dataItem.category;
-        if(category){
-          if(category == "USA") {
-            return "https://www.amcharts.com/wp-content/uploads/flags/united-states.svg";
-          } else if(category == "UK") {
-            return "https://www.amcharts.com/wp-content/uploads/flags/united-kingdom.svg";
-          } else {
-            return "https://www.amcharts.com/wp-content/uploads/flags/" + category.split(" ").join("-").toLowerCase() + ".svg";
-          }
-        }
-        return href;
-      })
-      categoryAxis.dataItems.template.bullet = image;
-
-      barChart.cursor = new am4charts.XYCursor();
-      barChart.cursor.behavior = "zoomY";
-
-      barChart.responsive.enabled = true;
-
-
-      this.chart = barChart;
-
-    },
-    createBarGraph2: function() {
-
-      var arrayCases = {};
-
-      // Removed islands/small countries/principalties because too population is too small to be representative
-      var blacklist = ["San Marino","Andorra","Holy See (Vatican City State)","Luxembourg","Gibraltar","Faroe Islands","Isle of Man","Falkland Islands (Malvinas)","Channel Islands","Monaco","Montserrat","Liechtenstein","Iceland","Mayotte"];
-
-      for(var i = 0; i < this.dataCountries.length; i++) {
-        var datum = this.dataCountries[i];
-        if(!blacklist.includes(datum.country)) {
-          arrayCases[datum.country] = {cases: datum.cases,flag: datum.flag};
-        }
+        arrayCases[datum.country] = {cases: datum.cases,flag: datum.flag};
       }
 
 
@@ -556,7 +439,6 @@ export default {
       barChart.cursor.behavior = "zoomY";
 
       barChart.responsive.enabled = true;
-
 
       this.chart = barChart;
 
@@ -629,7 +511,7 @@ export default {
       var arrayCountries = [];
 
       axios
-        .get('https://corona.lmao.ninja/v2/countries')
+        .get('https://disease.sh/v3/covid-19/countries')
         .then(response => {
           this.apiResponse = response.data;
           for(var countryInfos of this.apiResponse) arrayCountries.push(countryInfos['country'])
@@ -713,7 +595,6 @@ export default {
     this.show=true;
     this.getCountries();
     this.getData();
-    this.t = window.setInterval(this.getData,5*60000);
   },
 
   beforeDestroy() {

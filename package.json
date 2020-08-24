@@ -22,12 +22,7 @@
     "lodash": "^4.17.19",
     "minimist": "^1.2.5",
     "vue": "^2.6.11",
-    "vue-axios": "^2.1.5",
-    "vue-chartjs": "^3.5.0",
-    "vue-data-tables": "^3.4.5",
-    "vue-graph": "^0.8.7",
-    "vue-loading-overlay": "^3.3.2",
-    "vuejs-datatable": "^2.0.0-alpha.7"
+    "vue-axios": "^2.1.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.4.6",

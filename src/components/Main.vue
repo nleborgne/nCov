@@ -329,29 +329,14 @@ export default {
       } else {
 
         axios
-          .get('https://disease.sh/v3/covid-19/historical?lastdays=all')
+          .get('https://disease.sh/v3/covid-19/historical/all/?lastdays=all')
           .then(response => {
             this.graphDataApi = response.data;
 
             var arrayLabels = [];
 
-            for(var i = 0; i < Object.values(this.graphDataApi[0].timeline.cases).length; i++) {
-              var sumCases = 0;
-              var sumDeaths = 0;
-              var sumRecovered = 0;
-              for(var j = 0; j < this.graphDataApi.length; j++) {
-                sumCases += Object.values(this.graphDataApi[j].timeline.cases)[i];
-                sumDeaths += Object.values(this.graphDataApi[j].timeline.deaths)[i];
-                sumRecovered += Object.values(this.graphDataApi[j].timeline.recovered)[i];
-              }
-
-              data.push({date:'',cases:sumCases,deaths:sumDeaths,recovered:sumRecovered})
-            }
-
-            for(var k = 0; k < Object.values(this.graphDataApi[0].timeline.cases).length; k++) {
-              // We're not pushing the actual dates for display purpose
-              data[k].date = Object.keys(this.graphDataApi[0].timeline.cases)[k];
-              arrayLabels.push('');
+            for(var date of Object.keys(this.graphDataApi.cases)) {
+              data.push({'date':date,cases:this.graphDataApi.cases[date],deaths:this.graphDataApi.deaths[date],recovered:this.graphDataApi.recovered[date]})
             }
 
             this.graphLabels = arrayLabels;

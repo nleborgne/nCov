@@ -16,7 +16,7 @@
         Skip
       </button>
       <button class="btn btn-dark" @click="showModal1 = false; showModal2 = true;">
-        Next&nbsp;<i class="fas fa-long-arrow-alt-right"></i>
+        Next
       </button>
     </div>
   </modal>
@@ -35,7 +35,7 @@
         Skip
       </button>
       <button class="btn btn-dark" @click="showModal2 = false; showModal3 = true;">
-        Next&nbsp;<i class="fas fa-long-arrow-alt-right"></i>
+        Next
       </button>
     </div>
   </modal>
@@ -54,7 +54,7 @@
         Skip
       </button>
       <button class="btn btn-dark" @click="showModal3 = false; showModal4 = true;">
-        Next&nbsp;<i class="fas fa-long-arrow-alt-right"></i>
+        Next
       </button>
     </div>
   </modal>
@@ -181,9 +181,9 @@
   </div>
   <footer class="footer">
     <div class="container">
-      <span id="madeby" class="text-muted">made by <a href="https://builtbynlb.com/" target="_blank">nlb</a></span>
+      <span id="madeby" class="text-muted">built by <a href="https://builtbynlb.com/" target="_blank">nlb</a></span>
       <span>&nbsp;|&nbsp;</span>
-      <span>Stay safe <i class="fas fa-heart"></i></span>
+      <span>Stay safe ♥</span>
 
     </div>
 </footer>

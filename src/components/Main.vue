@@ -81,21 +81,7 @@
 
     <div class="col-xs-10 col-md-6 mx-auto">
 
-      <el-select
-        v-model="selectedCountry"
-        v-on:change="updateData(selectedCountry);"
-        class="col-12"
-        filterable
-      >
-        <el-option value="World">World</el-option>
-        <el-option
-          v-for="country in countriesList"
-          :key="country"
-          :label="country"
-          :value="country"
-          >
-        </el-option>
-      </el-select>
+      <v-select :options="countriesList" v-model="selectedCountry" @input="updateData(selectedCountry)"></v-select>
 
     </div>
 
@@ -238,8 +224,7 @@ export default {
       critical:0,
       tests:0,
       updated:null,
-
-      dataWorld: null,
+      dataWorld: [],
       dataCountries:null,
       dataCountriesMap:[],
 
@@ -247,7 +232,7 @@ export default {
       graphData: [],
       graphLabels: null,
 
-      countriesList: null,
+      countriesList: ['World'],
       selectedCountry:'World',
       countryImg: null,
     }
@@ -287,7 +272,6 @@ export default {
           })
     },
     updateData: function(country) {
-      this.getGraphData();
       if(country === 'World') {
         gsap.to(this.$data, 3, { cases: this.dataWorld.cases,roundProps:"cases",ease: "expo.out" } );
         gsap.to(this.$data, 3, { todayCases: this.dataWorld.todayCases,roundProps:"todayCases",ease: "expo.out" } );
@@ -309,6 +293,9 @@ export default {
         gsap.to(this.$data, 3, { tests: countryInfos.tests,roundProps:"tests",ease: "expo.out" } );
         this.countryImg = countryInfos.countryInfo.flag;
       }
+      
+      this.getGraphData();
+
     },
     getGraphData: function(){
       var data = [];
@@ -492,15 +479,11 @@ export default {
 
     },
     getCountries: function() {
-
-      var arrayCountries = [];
-
       axios
         .get('https://disease.sh/v3/covid-19/countries')
         .then(response => {
           this.apiResponse = response.data;
-          for(var countryInfos of this.apiResponse) arrayCountries.push(countryInfos['country'])
-          this.countriesList = arrayCountries;
+          for(var countryInfos of this.apiResponse) this.countriesList.push(countryInfos['country'])
         })
     },
     createMapChart: function() {

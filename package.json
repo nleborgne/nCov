@@ -17,13 +17,13 @@
     "bootstrap-vue": "^2.15.0",
     "chart.js": "^2.9.3",
     "core-js": "^3.6.5",
-    "element-ui": "^2.13.2",
     "gsap": "^3.4.1",
     "jquery": "^3.5.1",
     "lodash": "^4.17.19",
     "minimist": "^1.2.5",
     "vue": "^2.6.11",
-    "vue-axios": "^2.1.5"
+    "vue-axios": "^2.1.5",
+    "vue-select": "^3.10.8"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.11.0",
